@@ -24,6 +24,8 @@ public class PuzzlePieceController : MonoBehaviour
 
     private Vector3 originalScale;
 
+
+
     private void Start()
     {
 
@@ -37,16 +39,21 @@ public class PuzzlePieceController : MonoBehaviour
         
 
 
+        //Setting up initial position and rotations
         Random.seed = GetInstanceID() * System.DateTime.Now.Millisecond;
         Vector2 dist = Random.insideUnitCircle;
         Vector3 endPosition = new Vector3(dist.x * horizontalDistance, dist.y * verticalDistance,  0f);
         this.transform.position = spawnPoint.transform.position;
         this.transform.localPosition = this.transform.localPosition + endPosition;
+        if (GameController.rotation)
+        {
+            int rotationDegree = (int)Mathf.Floor(Random.Range(-4, 4));
+            transform.Rotate(new Vector3(0,0,1)* rotationDegree*90);
+        }
     }
 
     public void OnMouseUp()
     {
-        Debug.Log("mouse up");
         if (movable && active)
         {
             
@@ -63,15 +70,33 @@ public class PuzzlePieceController : MonoBehaviour
                 }
                 else
                 {
-                    transform.localScale = originalScale * (1 + scalingFactor);
+
+                    applyScaleAndRotation();
                 }
             }
             else
             {
-                
-                transform.localScale = originalScale * (1 + scalingFactor);
+
+                applyScaleAndRotation();
             }
 
+        }
+
+    }
+
+    private void applyScaleAndRotation()
+    {
+        if (!transform.localScale.Equals(originalScale * (1 + scalingFactor)))
+        {
+            transform.localScale = originalScale * (1 + scalingFactor);
+        }
+        else
+        {
+            if (GameController.rotation)
+            {
+                transform.Rotate(new Vector3(0, 0, 1) * -90);
+            }
+            
         }
 
     }

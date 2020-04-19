@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
-public class GameController: MonoBehaviour
+public class GameController : MonoBehaviour
 {
 
     public GameObject playScreen;
@@ -13,10 +13,13 @@ public class GameController: MonoBehaviour
 
     private bool onlyEdgesVisible = false;
 
+    public static GameObject newPuzzlePrefab = null;
+    public static bool rotation = false;
+
     void Start()
     {
 
-        if(EventManager.playScreenEnabled == null)
+        if (EventManager.playScreenEnabled == null)
         {
             EventManager.playScreenEnabled = new PlayScreenEvent();
         }
@@ -26,6 +29,15 @@ public class GameController: MonoBehaviour
         non_edge_pieces = pieces.Where(x => !x.gameObject.CompareTag("Edge")).ToArray();
         edge_pieces = pieces.Where(x => x.gameObject.CompareTag("Edge")).ToArray();
 
+    }
+
+    public void setNewPuzzlePrefab(GameObject puzzle)
+    {
+        newPuzzlePrefab = puzzle;
+    }
+    public void allowRotation()
+    {
+        rotation = !rotation;
     }
 
     private void PlayScreenEnabled(bool enabled)

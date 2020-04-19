@@ -8,12 +8,14 @@ public class PlayScreenManager : MonoBehaviour
 
     public Text timerText;
     private float timer;
+
     public void Init()
     {
         if(EventManager.playScreenEnabled == null)
         {
             EventManager.playScreenEnabled = new PlayScreenEvent();
         }
+
         
     }
 
@@ -37,6 +39,18 @@ public class PlayScreenManager : MonoBehaviour
         timerText.text = mm + ":" + ss;
 
     }
+
+    public void startNewGame()
+    {
+        GameObject puzzle = this.GetComponentInChildren<PuzzleController>().gameObject;
+        GameObject puzzleParent = puzzle.transform.parent.gameObject;
+        if (puzzle != null)
+        {
+            DestroyImmediate(puzzle);
+            Instantiate(GameController.newPuzzlePrefab).transform.SetParent(puzzleParent.transform);
+        }
+    }
+
     private void OnEnable()
     {
         if (EventManager.playScreenEnabled == null)
