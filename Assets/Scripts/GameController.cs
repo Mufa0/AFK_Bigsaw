@@ -14,17 +14,33 @@ public class GameController: MonoBehaviour
     private bool onlyEdgesVisible = false;
     void Start()
     {
+
+        if(EventManager.playScreenEnabled == null)
+        {
+            EventManager.playScreenEnabled = new PlayScreenEvent();
+        }
+        EventManager.playScreenEnabled.AddListener(PlayScreenEnabled);
+
         PuzzlePieceController[] pieces = playScreen.GetComponentsInChildren<PuzzlePieceController>();
         non_edge_pieces = pieces.Where(x => !x.gameObject.CompareTag("Edge")).ToArray();
         edge_pieces = pieces.Where(x => x.gameObject.CompareTag("Edge")).ToArray();
 
     }
 
-    private void OnEnable()
+    private void PlayScreenEnabled(bool enabled)
     {
-        PuzzlePieceController[] pieces = playScreen.GetComponentsInChildren<PuzzlePieceController>();
-        non_edge_pieces = pieces.Where(x => !x.gameObject.CompareTag("Edge")).ToArray();
-        edge_pieces = pieces.Where(x => x.gameObject.CompareTag("Edge")).ToArray();
+        if (enabled)
+        {
+            PuzzlePieceController[] pieces = playScreen.GetComponentsInChildren<PuzzlePieceController>();
+            non_edge_pieces = pieces.Where(x => !x.gameObject.CompareTag("Edge")).ToArray();
+            edge_pieces = pieces.Where(x => x.gameObject.CompareTag("Edge")).ToArray();
+        }
+        else
+        {
+            edge_pieces = null;
+            non_edge_pieces = null;
+        }
+       
     }
 
     private void OnlyEdges()

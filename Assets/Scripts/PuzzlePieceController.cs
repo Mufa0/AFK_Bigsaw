@@ -22,6 +22,7 @@ public class PuzzlePieceController : MonoBehaviour
     public float verticalDistance = 1f;
     private void Start()
     {
+
         if (EventManager.activeEvent == null)
         {
             EventManager.activeEvent = new ActiveEvent();
