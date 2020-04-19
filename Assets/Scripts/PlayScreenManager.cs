@@ -39,7 +39,6 @@ public class PlayScreenManager : MonoBehaviour
     }
     private void OnEnable()
     {
-        Debug.Log("Invoked");
         if (EventManager.playScreenEnabled == null)
         {
             EventManager.playScreenEnabled = new PlayScreenEvent();

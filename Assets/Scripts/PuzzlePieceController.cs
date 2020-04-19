@@ -15,13 +15,19 @@ public class PuzzlePieceController : MonoBehaviour
 
     public Material outlineMaterial;
     public Material selectedOutlineMaterial;
-    private Renderer renderer;
 
     public GameObject spawnPoint;
     public float horizontalDistance = 1f;
     public float verticalDistance = 1f;
+
+    public float scalingFactor = 0.5f;
+
+    private Vector3 originalScale;
+
     private void Start()
     {
+
+        originalScale = transform.localScale;
 
         if (EventManager.activeEvent == null)
         {
@@ -29,7 +35,6 @@ public class PuzzlePieceController : MonoBehaviour
         }
         EventManager.activeEvent.AddListener(SetActive);
         
-        renderer = this.GetComponent<Renderer>();
 
 
         Random.seed = GetInstanceID() * System.DateTime.Now.Millisecond;
@@ -41,6 +46,7 @@ public class PuzzlePieceController : MonoBehaviour
 
     public void OnMouseUp()
     {
+        Debug.Log("mouse up");
         if (movable && active)
         {
             
@@ -55,7 +61,17 @@ public class PuzzlePieceController : MonoBehaviour
                     movable = false;
                     active = false;
                 }
+                else
+                {
+                    transform.localScale = originalScale * (1 + scalingFactor);
+                }
             }
+            else
+            {
+                
+                transform.localScale = originalScale * (1 + scalingFactor);
+            }
+
         }
 
     }
@@ -68,7 +84,6 @@ public class PuzzlePieceController : MonoBehaviour
             zCord = Camera.main.WorldToScreenPoint(this.transform.position).z;
             offset = this.transform.position - Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, zCord));
             active = true;
-            ChangeMaterial(selectedOutlineMaterial, outlineMaterial.name);
             EventManager.activeEvent.Invoke(this.transform.name);
         }
         
@@ -79,7 +94,14 @@ public class PuzzlePieceController : MonoBehaviour
         if (movable && Input.touchCount <= 1)
         {
             Vector3 mousePosition = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, zCord));
-            this.transform.position = Vector2.Lerp(this.transform.position, mousePosition + offset, speed);
+            Vector3 diff = (mousePosition + offset) - this.transform.position;
+            if (diff.magnitude > 0)
+            {
+                //this.transform.position = Vector2.Lerp(this.transform.position, mousePosition + offset, speed);
+                this.transform.position = mousePosition + offset;
+                transform.localScale = originalScale;
+            }
+
         }
 
 
@@ -91,21 +113,9 @@ public class PuzzlePieceController : MonoBehaviour
         if (!this.transform.name.Equals(name) && this.active)
         {
             this.active = false;
-            ChangeMaterial(outlineMaterial, selectedOutlineMaterial.name);
+            transform.localScale = originalScale;
             
         } 
-    }
-    //TODO: Change this to avoid errors
-    private void ChangeMaterial(Material mat, string name)
-    {
-        if (renderer.materials[0].name.Equals(name))
-        {
-            renderer.materials[0] = mat;
-        }
-        else
-        {
-            renderer.materials[1] = mat;
-        }
     }
     
 }
