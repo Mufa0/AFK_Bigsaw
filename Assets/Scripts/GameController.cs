@@ -12,6 +12,7 @@ public class GameController: MonoBehaviour
     // Start is called before the first frame update
 
     private bool onlyEdgesVisible = false;
+
     void Start()
     {
 
@@ -21,7 +22,7 @@ public class GameController: MonoBehaviour
         }
         EventManager.playScreenEnabled.AddListener(PlayScreenEnabled);
 
-        PuzzlePieceController[] pieces = playScreen.GetComponentsInChildren<PuzzlePieceController>();
+        PuzzlePieceController[] pieces = playScreen.GetComponentsInChildren<PuzzlePieceController>(true);
         non_edge_pieces = pieces.Where(x => !x.gameObject.CompareTag("Edge")).ToArray();
         edge_pieces = pieces.Where(x => x.gameObject.CompareTag("Edge")).ToArray();
 
@@ -31,12 +32,14 @@ public class GameController: MonoBehaviour
     {
         if (enabled)
         {
-            PuzzlePieceController[] pieces = playScreen.GetComponentsInChildren<PuzzlePieceController>();
+            
+            PuzzlePieceController[] pieces = playScreen.GetComponentsInChildren<PuzzlePieceController>(true);
             non_edge_pieces = pieces.Where(x => !x.gameObject.CompareTag("Edge")).ToArray();
             edge_pieces = pieces.Where(x => x.gameObject.CompareTag("Edge")).ToArray();
         }
         else
         {
+            
             edge_pieces = null;
             non_edge_pieces = null;
         }
@@ -45,20 +48,22 @@ public class GameController: MonoBehaviour
 
     private void OnlyEdges()
     {
+        
         foreach (PuzzlePieceController go in non_edge_pieces)
         {
             go.gameObject.SetActive(false);
-            onlyEdgesVisible = true;
         }
+        onlyEdgesVisible = true;
     }
 
     private void ResetVisibility()
     {
-        foreach(PuzzlePieceController go in non_edge_pieces)
+        foreach (PuzzlePieceController go in non_edge_pieces)
         {
             go.gameObject.SetActive(true);
-            onlyEdgesVisible = false;
+            
         }
+        onlyEdgesVisible = false;
     }
 
     public void ChangeVisibilityController()
