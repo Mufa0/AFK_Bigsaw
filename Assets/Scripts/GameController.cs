@@ -1,7 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using System.Linq;
+using System.IO;
+
 public class GameController : MonoBehaviour
 {
 
@@ -88,6 +88,54 @@ public class GameController : MonoBehaviour
         {
             OnlyEdges();
         }
+    }
+
+    public void SaveGame()
+    {
+        Save save = new Save();
+
+        PuzzlePieceController[] puzzlePieces = playScreen.GetComponentsInChildren<PuzzlePieceController>().Where(item => item.gameObject.layer.Equals(LayerMask.NameToLayer("Clickable"))).ToArray();
+        foreach (PuzzlePieceController piece in puzzlePieces)
+        {
+            float[] position = { piece.transform.position.x, piece.transform.position.y, piece.transform.position.z };
+            float[] rotation = { piece.transform.rotation.x, piece.transform.rotation.y, piece.transform.rotation.z, piece.transform.rotation.w };
+            save.puzzles.Add(new Puzzle(piece.name, position, rotation));
+        }
+
+        string json = JsonUtility.ToJson(save);
+        Debug.Log(json);
+        string filename = Application.persistentDataPath + "/savegame.json";
+        FileStream fileStream = File.Create(filename);
+        fileStream.Close();
+
+        File.WriteAllText(filename, json);
+
+       
+
+    }
+
+    public void LoadGame()
+    {
+        
+
+        PuzzlePieceController[] puzzlePieces = playScreen.GetComponentsInChildren<PuzzlePieceController>().Where(item => item.gameObject.layer.Equals(LayerMask.NameToLayer("Clickable"))).ToArray();
+
+        string filename = Application.persistentDataPath + "/savegame.json";
+
+        string json = File.ReadAllText(filename);
+
+        Save save = JsonUtility.FromJson<Save>(json);
+
+        foreach(PuzzlePieceController piece in puzzlePieces)
+        {
+            Puzzle puzzle = save.puzzles.Where(t => t.name.Equals(piece.name)).First();
+            piece.transform.position = new Vector3(puzzle.position[0], puzzle.position[1], puzzle.position[2]);
+            piece.transform.rotation = new Quaternion(puzzle.rotation[0], puzzle.rotation[1], puzzle.rotation[2], puzzle.rotation[3]);
+        }
+
+        Debug.Log("Application Loaded!");
+
+
     }
 
 }

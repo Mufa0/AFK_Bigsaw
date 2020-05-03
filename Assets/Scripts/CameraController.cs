@@ -25,12 +25,14 @@ public class CameraController : MonoBehaviour
     {
         RaycastHit hit;
 
-        if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, 150f, mask.value)){
+        if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit)){
+            Debug.Log("hover" + hit.collider.name);
             pan = false;
             ZoomSetup();
         }
         else
         {
+            Debug.Log("No Hover!");
             ZoomSetup();
             PanSetup();
             

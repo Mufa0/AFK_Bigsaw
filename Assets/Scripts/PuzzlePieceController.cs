@@ -17,8 +17,8 @@ public class PuzzlePieceController : MonoBehaviour
     public Material selectedOutlineMaterial;
 
     public GameObject spawnPoint;
-    public float horizontalDistance = 1f;
-    public float verticalDistance = 1f;
+    public float horizontalDistance = 4f;
+    public float verticalDistance = 3f;
 
     public float scalingFactor = 0.5f;
 
